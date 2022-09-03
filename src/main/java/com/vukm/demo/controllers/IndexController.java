@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.vukm.demo.controller;
+package com.vukm.demo.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,10 @@ public class IndexController {
 	@GetMapping("/")
 	public List<String> index() {
 		List<String> programmingLanguage = new ArrayList<>();
-		programmingLanguage.add("JS");
-		programmingLanguage.add("C#");
 		programmingLanguage.add("Javascript");
+		programmingLanguage.add("C");
+		programmingLanguage.add("C#");
+		programmingLanguage.add("Java");
 		
 		return programmingLanguage;
 	}
