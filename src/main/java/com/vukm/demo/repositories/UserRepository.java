@@ -8,4 +8,6 @@ import org.springframework.data.repository.CrudRepository;
  * Created on 03/09/2022.
  */
 
-public interface UserRepository extends CrudRepository<User, Long> {}
+public interface UserRepository extends CrudRepository<User, Long> {
+    boolean existsByEmail(String email);
+}

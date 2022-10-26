@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserService {
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
@@ -22,17 +22,24 @@ public class UserService {
     }
 
     public ResponseDTO addUser(RegisterRequest data) {
-            String encodedPassword = this.bCryptPasswordEncoder.encode(data.getPassword());
+        ResponseDTO response = new ResponseDTO();
 
-            User user = new User();
-            ResponseDTO response = new ResponseDTO();
-
-            user.setEmail(data.getEmail());
-            user.setPassword(encodedPassword);
-
-            response.setData(user);
-            response.setStatus(true);
-
+        if (userRepository.existsByEmail(data.getEmail())) {
+            response.setData("email", "Email was existed, please choose another.");
+            response.setStatus(false);
             return response;
-    };
+        }
+
+        User user = new User();
+        user.setEmail(data.getEmail());
+        user.setPassword(this.bCryptPasswordEncoder.encode(data.getPassword()));
+
+        this.userRepository.save(user);
+
+        response.setData("user", user);
+        response.setStatus(true);
+
+        return response;
+    }
+
 }
