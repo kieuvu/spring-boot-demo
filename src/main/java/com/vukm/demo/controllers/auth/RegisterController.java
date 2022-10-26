@@ -2,12 +2,18 @@ package com.vukm.demo.controllers.auth;
 
 import com.vukm.demo.models.User;
 import com.vukm.demo.requests.user.RegisterRequest;
+import com.vukm.demo.responses.ResponseDTO;
 import com.vukm.demo.services.UserService;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author kieuvu
@@ -23,7 +29,21 @@ public class RegisterController {
     }
 
     @PostMapping("/api/register")
-    public User addUser(@RequestBody @Valid RegisterRequest data){
+    public ResponseDTO addUser(@RequestBody @Valid RegisterRequest data, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            ResponseDTO response = new ResponseDTO();
+
+            bindingResult.getAllErrors().forEach((error) -> {
+                errors.put(((FieldError) error).getField(), error.getDefaultMessage());
+            });
+
+            response.setData(errors);
+
+            response.setStatus(false);
+
+            return response;
+        }
          return this.userService.addUser(data);
     }
 }

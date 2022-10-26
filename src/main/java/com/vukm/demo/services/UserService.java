@@ -3,6 +3,7 @@ package com.vukm.demo.services;
 import com.vukm.demo.models.User;
 import com.vukm.demo.repositories.UserRepository;
 import com.vukm.demo.requests.user.RegisterRequest;
+import com.vukm.demo.responses.ResponseDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +21,18 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User addUser(RegisterRequest data) {
+    public ResponseDTO addUser(RegisterRequest data) {
             String encodedPassword = this.bCryptPasswordEncoder.encode(data.getPassword());
 
             User user = new User();
+            ResponseDTO response = new ResponseDTO();
+
             user.setEmail(data.getEmail());
             user.setPassword(encodedPassword);
 
-            return this.userRepository.save(user);
+            response.setData(user);
+            response.setStatus(true);
+
+            return response;
     };
 }
