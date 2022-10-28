@@ -3,6 +3,7 @@ package com.vukm.demo.controllers.auth;
 import com.vukm.demo.requests.user.RegisterRequest;
 import com.vukm.demo.responses.ResponseDTO;
 import com.vukm.demo.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author kieuvu
@@ -27,18 +26,15 @@ public class RegisterController {
     }
 
     @PostMapping("/api/register")
-    public ResponseDTO addUser(@RequestBody @Valid RegisterRequest data, BindingResult bindingResult) {
+    public ResponseEntity<ResponseDTO<Object>> addUser(@RequestBody @Valid RegisterRequest data, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            ResponseDTO response = new ResponseDTO();
+            ResponseDTO<Object> response = new ResponseDTO<>();
 
-            bindingResult.getAllErrors().forEach((error) -> {
-                response.setData(((FieldError) error).getField(), error.getDefaultMessage());
-            });
+            bindingResult.getAllErrors().forEach((error) -> response.setData(((FieldError) error).getField(), error.getDefaultMessage()));
 
             response.setStatus(false);
 
-            return response;
+            return ResponseEntity.badRequest().body(response);
         }
         return this.userService.addUser(data);
     }

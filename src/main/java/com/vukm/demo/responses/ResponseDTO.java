@@ -8,7 +8,7 @@ import java.util.Map;
  * Created on 26/10/2022.
  */
 
-public class ResponseDTO<K, V> {
+public class ResponseDTO<V> {
     Map<String, V> data;
     boolean status;
 
@@ -17,8 +17,9 @@ public class ResponseDTO<K, V> {
         this.status = false;
     }
 
-    public void setData(String key, V value) {
+    public ResponseDTO<V> setData(String key, V value) {
         this.data.put(key, value);
+        return this;
     }
 
     public Map<String, V> getData() {
@@ -29,7 +30,8 @@ public class ResponseDTO<K, V> {
         return this.status;
     }
 
-    public void setStatus(boolean status) {
+    public ResponseDTO<V> setStatus(boolean status) {
         this.status = status;
+        return this;
     }
 }
