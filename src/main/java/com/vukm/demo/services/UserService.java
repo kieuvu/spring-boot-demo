@@ -4,7 +4,6 @@ import com.vukm.demo.models.User;
 import com.vukm.demo.repositories.UserRepository;
 import com.vukm.demo.requests.user.RegisterRequest;
 import com.vukm.demo.responses.ResponseDTO;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +21,15 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public ResponseEntity<ResponseDTO<Object>> addUser(RegisterRequest data) {
+    public ResponseDTO<Object> addUser(RegisterRequest data) {
         ResponseDTO<Object> response = new ResponseDTO<>();
 
         if (userRepository.existsByEmail(data.getEmail())) {
             response.setData("email", "Email was existed, please choose another.").setStatus(false);
 
-            return ResponseEntity.badRequest().body(response);
+            return response;
         }
+
         User user = new User();
         user.setEmail(data.getEmail());
         user.setPassword(this.bCryptPasswordEncoder.encode(data.getPassword()));
@@ -38,6 +38,6 @@ public class UserService {
 
         response.setData("user", user).setStatus(true);
 
-        return ResponseEntity.ok().body(response);
+        return response;
     }
 }

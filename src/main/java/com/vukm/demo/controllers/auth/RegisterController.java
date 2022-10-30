@@ -27,15 +27,23 @@ public class RegisterController {
 
     @PostMapping("/api/register")
     public ResponseEntity<ResponseDTO<Object>> addUser(@RequestBody @Valid RegisterRequest data, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            ResponseDTO<Object> response = new ResponseDTO<>();
+        ResponseDTO<Object> response;
 
+        if (bindingResult.hasErrors()) {
+            response = new ResponseDTO<>();
             bindingResult.getAllErrors().forEach((error) -> response.setData(((FieldError) error).getField(), error.getDefaultMessage()));
 
             response.setStatus(false);
 
             return ResponseEntity.badRequest().body(response);
         }
-        return this.userService.addUser(data);
+
+         response = this.userService.addUser(data);
+
+        if (response.getStatus()) {
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
